@@ -911,6 +911,8 @@ class SingularityMode(LaunchMode):
 
         if self.gpu:
             extra_args += ' --nv '
+        if isinstance(extra_args, list):
+            extra_args = ''.join(extra_args)
         singularity_prefix = 'singularity exec %s %s /bin/bash -c ' % (
             extra_args,
             self.singularity_image,
@@ -1002,6 +1004,7 @@ class SlurmSingularity(SingularityMode):
         full_cmd = self.create_slurm_command(
             cmd, mount_points=mount_points,
         )
+        print("FULL CMD", full_cmd)
         utils.call_and_wait(
             full_cmd, verbose=verbose, dry=dry, skip_wait=self.skip_wait
         )

@@ -1,145 +1,99 @@
+NON_CODE_DIRS_TO_MOUNT = []
+SSS_NON_CODE_DIRS_TO_MOUNT = []
+BRC_EXTRA_SINGULARITY_ARGS = []
+BASE_CODE_DIR = '/global/home/users/jieq'
 CODE_DIRS_TO_MOUNT = [
+    BASE_CODE_DIR + '/railrl-private'
 ]
-NON_CODE_DIRS_TO_MOUNT = [
-]
-LOCAL_LOG_DIR = '/tmp/doodad-output/'
-OUTPUT_DIR_FOR_DOODAD_TARGET = '/tmp/doodad-output/'
-
-
-"""
-AWS Settings
-"""
-AWS_S3_PATH = 'TODO'
-
-# The docker image is looked up on dockerhub.com.
-DOODAD_DOCKER_IMAGE = 'TODO'
-INSTANCE_TYPE = 'c4.2xlarge'
-SPOT_PRICE = 0.3
-
-GPU_DOODAD_DOCKER_IMAGE = 'TODO'
-GPU_INSTANCE_TYPE = 'g3.4xlarge'
-GPU_SPOT_PRICE = 0.5
-REGION_TO_GPU_AWS_IMAGE_ID = {
-    'us-west-1': "ami-874378e7",
-    'us-east-1': "ami-ce73adb1",
-}
-AWS_FILE_TYPES_TO_SAVE = (
-    '*.txt', '*.csv', '*.json', '*.gz', '*.tar',
-    '*.log', '*.pkl', '*.mp4', '*.png', '*.jpg',
-    '*.jpeg', '*.patch', '*.html'
-)
-
-"""
-SSH Settings
-"""
-SSH_HOSTS = dict(
-    default=dict(
-        username='TODO',
-        hostname='TODO.domain.edu',
+DIR_AND_MOUNT_POINT_MAPPINGS = [
+    dict(
+        local_dir=BASE_CODE_DIR + '/.mujoco/',
+        mount_point='/root/.mujoco',
     ),
-)
-SSH_DEFAULT_HOST = 'vitchyr'
-SSH_PRIVATE_KEY = '~/.ssh/id_rsa'
-SSH_LOG_DIR = '~/shared/res'
-SSH_TMP_DIR = '~/shared/tmp'
-
-"""
-Local Singularity Settings
-"""
-SINGULARITY_IMAGE = 'TODO'
-SINGULARITY_PRE_CMDS = [
 ]
-
-
+LOCAL_LOG_DIR = '/global/scratch/jieq/learning_data/'
+OUTPUT_DIR_FOR_DOODAD_TARGET = '/tmp/doodad-output/learning_data'
+# If not set, default will be chosen by doodad
+# AWS_S3_PATH = 's3://bucket/directory
+AWS_S3_PATH = 's3://llm-test'
+# You probably don't need to change things below
+# Specifically, the docker image is looked up on dockerhub.com.
+DOODAD_DOCKER_IMAGE = 'gberseth/llm:latest'
+INSTANCE_TYPE = 'c4.xlarge'
+SPOT_PRICE = 0.05
+GPU_DOODAD_DOCKER_IMAGE = 'gberseth/llm:latest'
+GPU_INSTANCE_TYPE = 'g2.2xlarge'
+GPU_SPOT_PRICE = 0.5
+# These AMI images have the docker images already installed.
+REGION_TO_GPU_AWS_IMAGE_ID = {
+#     'us-west-1': "ami-874378e7",
+#     'us-east-1': "ami-0ef1b374",
+    'us-east-2': "ami-024f0e84c5a8282a8",
+}
+# This really shouldn't matter and in theory could be whatever
+OUTPUT_DIR_FOR_DOODAD_TARGET = '/tmp/doodad-output/'
 """
-BRC/Slurm Settings
-
-These are basically the same settings as above, but for the remote machine
-where you will be running the generated script.
+Slurm Settings
 """
+SINGULARITY_IMAGE = '/global/scratch/gberseth/ubuntu_llm.img'
+SINGULARITY_PRE_CMDS = [
+    'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.mujoco/mjpro150/bin'
+]
 SLURM_CONFIGS = dict(
     cpu=dict(
-        account_name='TODO',
-        partition='TODO',
+        account_name='fc_rail',
+        partition='savio',
         n_gpus=0,
-        max_num_cores_per_node=20,
-    ),
+        max_num_cores_per_node=8,
+        time_in_mins=1200, ### 20 hours 
+ ),
     gpu=dict(
-        account_name='TODO',
-        partition='TODO',
+        account_name='co_rail',
+        partition='savio3_2080ti',
         n_gpus=1,
         max_num_cores_per_node=8,
         n_cpus_per_task=2,
-    ),
+        time_in_mins=1440, ### 20 hours   
+ ),
 )
-BRC_EXTRA_SINGULARITY_ARGS = '--writable -B /usr/lib64 -B /var/lib/dcv-gl'
-TASKFILE_PATH_ON_BRC = 'TODO'
-
-
+"""
+Slurm Script Settings
+These are basically the same settings as above, but for the remote machine
+where you will be running the generated script.
+"""
 SSS_CODE_DIRS_TO_MOUNT = [
+    '/global/home/users/vitchyr/git/railrl',
+    '/global/home/users/vitchyr/git/multiworld',
+    '/global/home/users/vitchyr/git/doodad',
 ]
-SSS_NON_CODE_DIRS_TO_MOUNT = [
+SSS_DIR_AND_MOUNT_POINT_MAPPINGS = [
+    dict(
+        local_dir='/global/home/users/vitchyr/.mujoco',
+        mount_point='/root/.mujoco',
+    ),
 ]
-SSS_LOG_DIR = '/global/scratch/vitchyr/doodad-log'
-
-
-SSS_GPU_IMAGE = 'TODO'
-SSS_CPU_IMAGE = 'TODO'
-SSS_RUN_DOODAD_EXPERIMENT_SCRIPT_PATH = 'TODO'
+SSS_LOG_DIR = '/global/scratch/gberseth/doodad-log'
+SSS_IMAGE = '/global/scratch/vitchyr/singularity_imgs/railrl-vitchyr-v2.img'
+SSS_RUN_DOODAD_EXPERIMENT_SCRIPT_PATH = (
+    '/global/home/users/vitchyr/git/railrl/scripts/run_experiment_from_doodad.py'
+)
 SSS_PRE_CMDS = [
-    'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH'
+    'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/global/home/users/vitchyr/.mujoco/mjpro150/bin'
 ]
-
-
 """
 GCP Settings
-
-To see what zones support GPU, go to https://cloud.google.com/compute/docs/gpus/
 """
-GCP_IMAGE_NAME = 'TODO'
-GCP_GPU_IMAGE_NAME = 'TODO'
-GCP_BUCKET_NAME = 'TODO'
-
+GCP_IMAGE_NAME = 'railrl-torch-4-cpu'
+GCP_GPU_IMAGE_NAME = 'railrl-torch4cuda9'
+GCP_BUCKET_NAME = 'railrl-steven'
 GCP_DEFAULT_KWARGS = dict(
-    zone='us-west1-a',
+    zone='us-west2-c',
     instance_type='n1-standard-4',
-    image_project='TODO',
+    image_project='railrl-private-gcp',
     terminate=True,
-    preemptible=False,  # is much more expensive!
+    preemptible=True,
     gpu_kwargs=dict(
-        gpu_model='nvidia-tesla-k80',
+        gpu_model='nvidia-tesla-p4',
         num_gpu=1,
     )
 )
-GCP_FILE_TYPES_TO_SAVE = (
-    '*.txt', '*.csv', '*.json', '*.gz', '*.tar',
-    '*.log', '*.pkl', '*.mp4', '*.png', '*.jpg',
-    '*.jpeg', '*.patch', '*.html'
-)
-
-# Overwrite with private configurations
-
-try:
-    from launchers.config_private_rlframe import *
-    print ("Running RL-Framework")
-except:
-    print ("RL-Framework not installed")
-    pass 
-try:
-    from launchers.config_private_comps import *
-    print ("Running CoMPS")
-except:
-    print ("CoMPS not installed")
-    pass 
-try:
-    from launchers.config_private_smirl import *
-    print ("Running SMiRL")
-except:
-    print ("SMiRL not installed")
-    pass 
-try:
-    from railrl.launchers.config_private_llm import *
-    print ("Running LLM")
-except:
-    print ("LLM not installed")
-    pass 

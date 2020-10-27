@@ -49,5 +49,4 @@ class CheckpointManager(object):
             {chk_tar_cmd}
             sleep {wait_interval}
         done & echo sync initiated
-        """.format(wait_interval=wait_interval, chk_tar_cmd=chk_tar_cmd,
-
+        """.format(wait_interval=wait_interval, chk_tar_cmd=chk_tar_cmd)
