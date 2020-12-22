@@ -1,7 +1,7 @@
 NON_CODE_DIRS_TO_MOUNT = []
 SSS_NON_CODE_DIRS_TO_MOUNT = []
 BRC_EXTRA_SINGULARITY_ARGS = []
-BASE_CODE_DIR = '/global/home/users/jieq'
+BASE_CODE_DIR = '/global/scratch/jieq'
 CODE_DIRS_TO_MOUNT = [
     BASE_CODE_DIR + '/railrl-private'
 ]
