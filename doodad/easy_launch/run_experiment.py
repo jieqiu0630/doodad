@@ -46,5 +46,4 @@ if __name__ == "__main__":
         doodad_config = doodad_config._replace(
             base_log_dir=output_dir,
         )
-
     method_call(doodad_config, variant)

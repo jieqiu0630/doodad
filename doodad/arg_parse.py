@@ -39,6 +39,7 @@ def get_args(key=None, default=None):
     if args.args_data:
         if args.use_cloudpickle:
             import cloudpickle
+            print("Cloudpickle version:", args.cloudpickle_version, cloudpickle.__version__)
             assert args.cloudpickle_version == cloudpickle.__version__, "Cloudpickle versions do not match! (host) %s vs (remote) %s" % (args.cloudpickle_version, cloudpickle.__version__)
             data = cloudpickle.loads(base64.b64decode(args.args_data))
         else:

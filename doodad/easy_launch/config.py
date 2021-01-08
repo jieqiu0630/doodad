@@ -1,27 +1,28 @@
 NON_CODE_DIRS_TO_MOUNT = []
 SSS_NON_CODE_DIRS_TO_MOUNT = []
 BRC_EXTRA_SINGULARITY_ARGS = []
-BASE_CODE_DIR = '/global/scratch/jieq'
+BASE_CODE_DIR = '/home/jieqiu'
 CODE_DIRS_TO_MOUNT = [
     BASE_CODE_DIR + '/railrl-private'
 ]
+RUN_DOODAD_EXPERIMENT_SCRIPT_PATH = '/home/jieqiu/railrl-private/scripts/run_experiment_from_doodad.py'
 DIR_AND_MOUNT_POINT_MAPPINGS = [
     dict(
         local_dir=BASE_CODE_DIR + '/.mujoco/',
         mount_point='/root/.mujoco',
     ),
 ]
-LOCAL_LOG_DIR = '/global/scratch/jieq/learning_data/'
+LOCAL_LOG_DIR = BASE_CODE_DIR + '/learning_data/'
 OUTPUT_DIR_FOR_DOODAD_TARGET = '/tmp/doodad-output/learning_data'
 # If not set, default will be chosen by doodad
 # AWS_S3_PATH = 's3://bucket/directory
 AWS_S3_PATH = 's3://llm-test'
 # You probably don't need to change things below
 # Specifically, the docker image is looked up on dockerhub.com.
-DOODAD_DOCKER_IMAGE = 'gberseth/llm:latest'
+DOODAD_DOCKER_IMAGE = 'jieqiu/llm:latest'
 INSTANCE_TYPE = 'c4.xlarge'
 SPOT_PRICE = 0.05
-GPU_DOODAD_DOCKER_IMAGE = 'gberseth/llm:latest'
+GPU_DOODAD_DOCKER_IMAGE = 'jieqiu/llm:latest'
 GPU_INSTANCE_TYPE = 'g2.2xlarge'
 GPU_SPOT_PRICE = 0.5
 # These AMI images have the docker images already installed.
